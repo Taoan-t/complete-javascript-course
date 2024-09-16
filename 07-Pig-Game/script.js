@@ -1,31 +1,55 @@
 'use strict';
 
-const rollDiceBtn = document.querySelector('.btn--roll');
-const holdBtn = document.querySelector('.btn--hold');
-const resetBtn = document.querySelector('.btn--new');
+// Selecting elements
+const score0El = document.querySelector('#score--0');
+const score1El = document.getElementById('score--1');
+const current0El = document.getElementById('current--0');
+const current1El = document.getElementById('current--1');
 
-const diceImg = document.querySelector('.dice');
-let currentScoreBtn = document.querySelector('.player--active .current-score');
-let currentTotalBtn;
-const players = document.querySelectorAll('.player');
-// const activePlayer = document.querySelector('.player--active');
-const currScorePlayer1 = document.getElementById('current--0');
-const currScorePlayer2 = document.getElementById('current--1');
-const totalScorePlayer1 = document.getElementById('score--0');
-const totalScorePlayer2 = document.getElementById('score--1');
+const diceEl = document.querySelector('.dice');
+const btnRoll = document.querySelector('.btn--roll');
+const btnHold = document.querySelector('.btn--hold');
+const btnNew = document.querySelector('.btn--new');
 
-const dices = [
-  'dice-1.png',
-  'dice-2.png',
-  'dice-3.png',
-  'dice-4.png',
-  'dice-5.png',
-  'dice-6.png',
-];
+// Starting conditions
+score0El.textContent = 0;
+score1El.textContent = 0;
+diceEl.classList.add('hidden');
 
 let currentScore = 0;
+
+// Rolling dice functionality
+btnRoll.addEventListener('click', () => {
+  // 1. Generating a random dice roll
+  const dice = Math.trunc(Math.random() * 6) + 1;
+
+  // 2. Display dice
+  diceEl.classList.remove('hidden');
+  diceEl.src = `dice-${dice}.png`;
+
+  // 3. Check for rolled 1
+  if (dice === 1) {
+    // Switch to next player
+    currentScore = 0;
+    currentScoreBtn.textContent = currentScore;
+    switchPlayer();
+  } else {
+    // Add dice to current score
+    currentScore += dice;
+    currentScoreBtn.textContent = currentScore;
+  }
+});
+
+// Current score variables
+let currentScoreBtn = document.querySelector('.player--active .current-score');
+
+// Total score variables
+let currentTotalBtn;
 let totalScore1 = 0;
 let totalScore2 = 0;
+
+// Players score
+const players = document.querySelectorAll('.player');
 
 function switchPlayer() {
   players.forEach(player => {
@@ -40,27 +64,8 @@ function clearCurrentScore() {
   currentScore = 0;
 }
 
-// handle roll dice button
-rollDiceBtn.addEventListener('click', () => {
-  // roll dice
-  const dice = Math.floor(Math.random() * 6) + 1;
-
-  // change dice img
-  diceImg.src = dices[dice - 1];
-
-  // change active player's current score
-  if (dice === 1) {
-    currentScore = 0;
-    currentScoreBtn.textContent = currentScore;
-    switchPlayer();
-  } else {
-    currentScore += dice;
-    currentScoreBtn.textContent = currentScore;
-  }
-});
-
 // handle hold button
-holdBtn.addEventListener('click', () => {
+btnHold.addEventListener('click', () => {
   // update total score to active player
   const activePlayer = document.querySelector('.player--active');
 
@@ -79,7 +84,7 @@ holdBtn.addEventListener('click', () => {
 });
 
 // handle new game button
-resetBtn.addEventListener('click', () => {
+btnNew.addEventListener('click', () => {
   // clear current score
   clearCurrentScore();
 
@@ -91,5 +96,5 @@ resetBtn.addEventListener('click', () => {
   });
 
   // clear dice image
-  diceImg.style.display = 'none';
+  diceEl.style.display = 'none';
 });
